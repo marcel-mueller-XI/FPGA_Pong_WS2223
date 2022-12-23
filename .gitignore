@@ -1,0 +1,27 @@
+#Git Ignore
+#am besten beim Commit überprüfen ob nur relevante Dateien gelistet werden
+#und diesen nur dann ausführen wenn OK, sonst diese Datei erweitern 
+#und nochmals beim/vorm Commit überprüfen
+
+
+#Quartus - nicht benötigte Dateien
+/db/
+/incremental_db/
+/simulation/modelsim/
+/output_files/
+!*.sof
+
+*.bak
+*.rpt
+*.done
+*.summary
+
+
+
+#temporäre Daten von doxygen
+/doxygen/html/
+/doxygen/latex/
+/doxygen/rtf/
+
+#von Microsoft wenn Bilder im Verzeichnis sind
+Thumbs.db
