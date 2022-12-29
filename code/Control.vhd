@@ -6,16 +6,16 @@ use ieee.std_logic_1164.all;
 
 entity Control is
 port(
-	clk		: in std_logic;
-	reset	: in std_logic;
+	clk		: in std_logic;			--! main clk
+	reset	: in std_logic;			--! asynchronos reset
 
-	button_start 		: in std_logic;
-	button_resetMatch 	: in std_logic;
-	ball_outOfField 	: in std_logic;
-	end_match			: in std_logic;
+	button_start 		: in std_logic;	--! button input, in order to start the game
+	button_resetMatch 	: in std_logic; --! button in order to reset the match (reset score)
+	ball_outOfField 	: in std_logic; --! inputs wheather the ball is outside the field -> score
+	end_match			: in std_logic; --! inputs end_match wheather the match ends due to one player reached max score
 	
-	reset_score 		: out std_logic;
-	start_ball 			: out std_logic
+	reset_score 		: out std_logic;	--! triggers the score module to reset its score
+	start_ball 			: out std_logic		--! triggers the ball logic module to start the game with that the ball
 );
 end entity Control;
 
@@ -26,6 +26,8 @@ architecture behave of Control is
 
 begin
 
+
+	-- #################################################################
 	saveNextState : process (CLK, reset)
 	begin
 		if (reset = '1')	then
@@ -34,7 +36,7 @@ begin
 			current_state <= next_state;
 		end if;
 	end process saveNextState;
-
+	-- #################################################################
 	nextState : process (current_state, button_start, button_resetMatch, ball_outOfField, end_match)
 	begin
 		next_state <= current_state;
@@ -65,7 +67,7 @@ begin
 		end case ;
 
 	end process nextState;
-
+	-- #################################################################
 	outputProcess : process (current_state)
 	begin
 		reset_score <= '0';
