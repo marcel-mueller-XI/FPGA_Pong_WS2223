@@ -12,16 +12,16 @@ generic(
 
 port(
 	-- Inputs
-	clk : in std_logic;
-	reset : in std_logic;
-	up, down : in std_logic;
+	clk 		: in std_logic;	--! inputs main clk
+	reset 		: in std_logic;	--! inputs asynchronos hard reset
+	up, down 	: in std_logic;	--! inputs userbuttons for controlling paddles up/down
 
 	-- Outputs
-	p_a_x, p_a_y, p_b_x, p_b_y : out std_logic_vector(9 downto 0);
+	p_a_x, p_a_y, p_b_x, p_b_y : out std_logic_vector(9 downto 0);	--! current position of paddle for collition module
 
 	-- Interface for VGA Display Driver
-	x,y : in std_logic_vector(9 downto 0);
-	color_p : out std_logic
+	x,y 		: in std_logic_vector(9 downto 0);	--! interface to display module, inputs current posistion of display cursor
+	color_p 	: out std_logic						--! outputs color on given cursor position (1 when paddle is on cursor pos, 0 else)
 );
 end entity paddle;
 
@@ -31,8 +31,8 @@ architecture behave of paddle is
 	signal pos_b_x : std_logic_vector(9 downto 0);	--! pos_b defines lower right corner of paddle, pos_b_x defines x-position of this point
 	signal pos_b_y : std_logic_vector(9 downto 0);	--! pos_b defines lower right corner of paddle, pos_b_y defines y-position of this point
 
-	signal x_display : std_logic_vector(9 downto 0);
-	signal y_display : std_logic_vector(9 downto 0);
+	signal x_display : std_logic_vector(9 downto 0);	--! added intern singal to enhance readability of signal
+	signal y_display : std_logic_vector(9 downto 0);	--! added intern singal to enhance readability of signal
 
 begin
 	x_display <= x;
