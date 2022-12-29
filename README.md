@@ -1,4 +1,4 @@
-# FPGA_Pong_WS2223
+# FPGA Pong WS2223
 
 ### Definition des Koordinatensystems
 
