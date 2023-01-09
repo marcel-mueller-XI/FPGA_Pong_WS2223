@@ -78,8 +78,10 @@ begin
 				start_ball <= '1';
 			when reset_score_state =>
 				reset_score <= '1';
+			when others =>
+				
 		end case;
 	
-	end process outputProcess
+	end process outputProcess;
 
 end architecture behave;
