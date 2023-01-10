@@ -17,6 +17,10 @@ architecture sim of Control_tb is
 	signal reset_score          : std_logic := '0';
 	signal start_ball           : std_logic := '0';
 
+    constant PERIOD : time := 40 ns;		-- 25,175Mhz
+    constant offset : time := 50 ns;
+    signal clk_int  : std_logic := '0';
+
 begin
 
 DUT: entity work.Control
@@ -34,6 +38,11 @@ port map(
     );
 
 -- tester:
+
+    clk_tb <= clk_int;
+	clk_int <= not(clk_int) after PERIOD/2;
+	
+    button_start <= '0', '1' after 100 ns;
 
 
 end architecture sim;
