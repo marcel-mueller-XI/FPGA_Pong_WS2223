@@ -4,7 +4,7 @@ package PongPack is
     SUBTYPE xType IS integer RANGE 0 TO 1023;
     SUBTYPE yType IS integer RANGE 0 TO 1023;
 
-    constant MAIN_CLOCK     : integer := 25175000; --! in Hz
+    constant MAIN_CLOCK     : integer := 25175000; --! in Hz = 39,722 ns
     constant COLOR_DEPTH    : integer := 4;
     constant DISPLAY_WIDTH  : integer := 640;
     constant DISPLAY_HEIGHT : integer := 480;
