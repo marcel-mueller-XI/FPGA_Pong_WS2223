@@ -10,16 +10,15 @@ architecture sim of Control_tb is
 	signal clk_tb	: std_logic := '0';
 	signal reset_tb : std_logic := '0';
 
-    signal button_start         : std_logic := '0';
+   signal button_start         : std_logic := '0';
 	signal button_resetMatch    : std_logic := '0';
 	signal ball_outOfField      : std_logic := '0';
-	signal end_match            : std_logic := '0';
+	signal score_max            : std_logic := '0';
 	signal reset_score          : std_logic := '0';
 	signal start_ball           : std_logic := '0';
 
-    constant PERIOD : time := 40 ns;		-- 25,175Mhz
-    constant offset : time := 50 ns;
-    signal clk_int  : std_logic := '0';
+   constant PERIOD : time := 40 ns;		-- 25,175Mhz
+   constant offset : time := 50 ns;
 
 begin
 
@@ -27,11 +26,11 @@ DUT: entity work.Control
 port map(
 	clk => clk_tb,
 	reset => reset_tb,
-    
+
     button_start => button_start,
 	button_resetMatch => button_resetMatch,
 	ball_outOfField => ball_outOfField,
-	end_match => end_match,
+	score_max => score_max,
 
 	reset_score => reset_score,
 	start_ball => start_ball
@@ -39,10 +38,12 @@ port map(
 
 -- tester:
 
-    clk_tb <= clk_int;
-	clk_int <= not(clk_int) after PERIOD/2;
+	clk_tb <= not(clk_tb) after PERIOD/2;
 	
-    button_start <= '0', '1' after 100 ns;
-
+   button_start <= '0', '1' after 110 ns, '0' after 150 ns, 				'1' after 410 ns, '0' after 430 ns;
+   button_resetMatch <= '0', 							'1' after 190 ns, '0' after 230 ns, 		'0' after 460 ns;
+   ball_outOfField <= '0', '1' after 290 ns, '0' after 330 ns;
+   score_max <= '0',  '1' after 250 ns, '0' after 270 ns;
+	
 
 end architecture sim;

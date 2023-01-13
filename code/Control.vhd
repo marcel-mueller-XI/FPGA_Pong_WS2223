@@ -3,19 +3,24 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+library work;
+use work.PongPack.all;
+
 
 entity Control is
 port(
 	clk		: in std_logic;			--! main clk
 	reset	: in std_logic;			--! asynchronos reset
 
-	button_start 		: in std_logic;	--! button input, in order to start the game
-	button_resetMatch 	: in std_logic; --! button in order to reset the match (reset score)
+	-- INPUTS
+	button_start 		: in std_logic; --! button input, in order to start the game
+	button_resetMatch : in std_logic; --! button in order to reset the match (reset score)
 	ball_outOfField 	: in std_logic; --! inputs wheather the ball is outside the field -> score
-	end_match			: in std_logic; --! inputs end_match wheather the match ends due to one player reached max score
+	score_max			: in std_logic; --! inputs score_max wheather the match ends due to one player reached max score
 	
+	-- OUTPUTS
 	reset_score 		: out std_logic;	--! triggers the score module to reset its score
-	start_ball 			: out std_logic		--! triggers the ball logic module to start the game with that the ball
+	start_ball 			: out std_logic	--! triggers the ball logic module to start the game with that the ball
 );
 end entity Control;
 
@@ -25,7 +30,6 @@ architecture behave of Control is
 	signal next_state	 : STATE_TYPE;
 
 begin
-
 
 	-- #################################################################
 	saveNextState : process (CLK, reset)
@@ -37,7 +41,7 @@ begin
 		end if;
 	end process saveNextState;
 	-- #################################################################
-	nextState : process (current_state, button_start, button_resetMatch, ball_outOfField, end_match)
+	nextState : process (current_state, button_start, button_resetMatch, ball_outOfField, score_max)
 	begin
 		next_state <= current_state;
 		case( current_state ) is
@@ -47,7 +51,7 @@ begin
 			when game_ready =>
 				if(button_start = '1') then
 					next_state <= game_running;
-				elsif(end_match = '1') then
+				elsif(score_max = '1') then
 					next_state <= match_over;
 				elsif(button_resetMatch = '1') then
 					next_state <= reset_score_state;
