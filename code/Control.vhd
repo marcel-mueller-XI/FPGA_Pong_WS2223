@@ -9,18 +9,18 @@ use work.PongPack.all;
 
 entity Control is
 port(
-	clk		: in std_logic;			--! main clk
-	reset	: in std_logic;			--! asynchronos reset
+	clk		: in std_logic;			--! inputs main clk
+	reset	: in std_logic;			--! inputs global asynchronous reset
 
 	-- INPUTS
-	button_start 		: in std_logic; --! button input, in order to start the game
-	button_resetMatch : in std_logic; --! button in order to reset the match (reset score)
-	ball_outOfField 	: in std_logic; --! inputs wheather the ball is outside the field -> score
-	score_max			: in std_logic; --! inputs score_max wheather the match ends due to one player reached max score
+	button_start 		: in std_logic; --! button input, to start the game, only when the game is ready | from hardware button
+	button_resetMatch 	: in std_logic;	--! button in order to reset the match (reset score), also possible when score_max is not reached | from hardware button
+	ball_outOfField 	: in std_logic; --! inputs whether the ball is outside the field -> game stops, score increments (not in this module) | from collision module
+	score_max			: in std_logic; --! inputs score_max wheather the match ends due to one player reached max score | from score module
 	
 	-- OUTPUTS
-	reset_score 		: out std_logic;	--! triggers the score module to reset its score
-	start_ball 			: out std_logic	--! triggers the ball logic module to start the game with that the ball
+	reset_score 		: out std_logic; --! triggers the score module to reset its score | to score module
+	start_ball 			: out std_logic	--! triggers the ball logic module to start the game with that the ball | to ball module
 );
 end entity Control;
 
