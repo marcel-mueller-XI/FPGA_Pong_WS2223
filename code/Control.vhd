@@ -49,12 +49,12 @@ begin
 			when idle =>
 				next_state <= game_ready;
 			when game_ready =>
-				if(button_start = '1') then
-					next_state <= game_running;
-				elsif(score_max = '1') then
+				if(score_max = '1') then
 					next_state <= match_over;
 				elsif(button_resetMatch = '1') then
 					next_state <= reset_score_state;
+				elsif(button_start = '1') then
+					next_state <= game_running;
 				end if;
 			when game_running =>
 				if(ball_outOfField = '1') then
