@@ -10,7 +10,7 @@ architecture sim of Control_tb is
 	signal clk_tb	: std_logic := '0';
 	signal reset_tb : std_logic := '0';
 
-   signal button_start         : std_logic := '0';
+    signal button_start         : std_logic := '0';
 	signal button_resetMatch    : std_logic := '0';
 	signal ball_outOfField      : std_logic := '0';
 	signal score_max            : std_logic := '0';
