@@ -20,7 +20,7 @@ port(
 	
 	-- OUTPUTS
 	reset_score 		: out std_logic; --! triggers the score module to reset its score | to score module
-	start_ball 			: out std_logic	--! triggers the ball logic module to start the game with that the ball | to ball module
+	start_ball 			: out std_logic	--! activates the ball logic module to start the game with that the ball | to ball module
 );
 end entity Control;
 
