@@ -29,6 +29,8 @@ architecture behave of Control is
 	signal current_state : STATE_TYPE;
 	signal next_state	 : STATE_TYPE;
 
+	signal button_resetMatch_last : std_logic;
+
 begin
 
 	-- #################################################################
@@ -51,7 +53,7 @@ begin
 			when game_ready =>
 				if(score_max = '1') then
 					next_state <= match_over;
-				elsif(button_resetMatch = '1') then
+				elsif(button_resetMatch = '1' and button_resetMatch_last = '0') then
 					next_state <= reset_score_state;
 				elsif(button_start = '1') then
 					next_state <= game_running;
@@ -87,5 +89,15 @@ begin
 		end case;
 	
 	end process outputProcess;
+
+
+	button_last : process (clk, reset)
+	begin
+		if (reset = '1')	then
+			button_resetMatch_last <= '0';
+		elsif (rising_edge(clk)) then
+			button_resetMatch_last <= button_resetMatch;
+		end if;
+	end process button_last;
 
 end architecture behave;
