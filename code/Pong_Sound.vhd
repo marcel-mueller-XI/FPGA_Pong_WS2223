@@ -7,8 +7,7 @@
 
 -- ToDo * * * * * * * * * * * * * * * * * * * * * * * *
 
--- song/victory anlegen für passende "Musik"
--->clk_?...clk_???? anlegen, Multiplexer und Zuweisung Ausgang fertig 
+-- Doku: Töne nicht mit Schleifen, da zu viel Hardwareumsetzung bei zB 70k Durchläufen
 
 -- ToDo * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -73,10 +72,8 @@ ARCHITECTURE behave OF Pong_Sound IS
 	signal	clk_edge			:	std_logic;		--! PWM signal for edge sound [tone = c']
 	signal	clk_goal			:	std_logic;		--! PWM signal for goal sound [tone = c'']
 	signal	clk_g				:	std_logic;		--! PWM signal for tone g [tone = g']
-	signal	song				:	std_logic;		--! PWM signal for game sound while playing
 	signal	victory			:	std_logic;		--! PWM signal for victory
 BEGIN
-	song 		<= '0';
 
 	victory 	<= 	clk_g 	WHEN 	index_melody = 1 OR index_melody = 3 OR index_melody = 7 ELSE
 						'0'		WHEN  index_melody = 0 ELSE
@@ -140,7 +137,7 @@ BEGIN
 		END CASE;
 	END PROCESS nextstate_proc;
 	
-	output_proc : PROCESS( current_state, song, clk_paddle, clk_edge, clk_goal, victory )
+	output_proc : PROCESS( current_state, clk_paddle, clk_edge, clk_goal, victory )
 	BEGIN
 		Sound <= '0'; 	-- Default Assignment for D-Latch problem
 		CASE current_state IS
@@ -149,9 +146,7 @@ BEGIN
 				Sound <= '0';
 				
 			WHEN s_playing =>
-				IF (song = '1' ) THEN
-					Sound <= '1';
-				END IF;
+				NULL;
 				
 			WHEN s_paddle_bounce =>
 				IF (clk_paddle = '1' ) THEN
@@ -211,26 +206,30 @@ BEGIN
 	END PROCESS timer_proc;
 	
 	proc_sound_paddle: process(Clk)			--! tone f' [352 Hz]
+		variable count_paddle_temp : integer;
 	begin
 		if (rising_edge(Clk)) then
-			count_paddle <= count_paddle + 1;
-			if (count_paddle >= 35510) then	--> 352Hz
-				count_paddle <= 0;
+			count_paddle_temp := count_paddle + 1;
+			count_paddle 		<= count_paddle_temp;
+			if (count_paddle_temp >= 35510) then	--> 352Hz
+				count_paddle 	<= 0;
 				if ( Clk_paddle = '0') then
-					Clk_paddle <= '1';
+					Clk_paddle 	<= '1';
 				else
-					Clk_paddle <= '0';
+					Clk_paddle 	<= '0';
 				end if;
 			end if;
 		end if;	
 	end process proc_sound_paddle;
 	
 	proc_sound_edge: process(Clk)				--! tone c'' [527 Hz]
+		variable count_edge_temp : integer;
 	begin
 		if (rising_edge(Clk)) then
-			count_edge <= count_edge + 1;
-			if (count_edge >= 23718) then		--> 527Hz
-				count_edge <= 0;
+			count_edge_temp 	:= count_edge + 1;
+			count_edge			<= count_edge_temp;
+			if (count_edge_temp >= 23718) then		--> 527Hz
+				count_edge 	<= 0;
 				if ( Clk_edge = '0') then
 					Clk_edge <= '1';
 				else
@@ -241,10 +240,12 @@ BEGIN
 	end process proc_sound_edge;
 	
 	proc_sound_goal: process(Clk)				--! tone c' [264 Hz]
+		variable count_goal_temp : integer;
 	begin
 		if (rising_edge(Clk)) then
-			count_goal <= count_goal + 1;
-			if (count_goal >= 47348) then		--> 264Hz
+			count_goal_temp 	:= count_goal + 1;
+			count_goal			<= count_goal_temp;
+			if (count_goal_temp >= 47348) then		--> 264Hz
 				count_goal <= 0;
 				if ( Clk_goal = '0') then
 					Clk_goal <= '1';
@@ -256,10 +257,12 @@ BEGIN
 	end process proc_sound_goal;
 	
 	proc_tone_g: process(Clk)					--! tone g' [396 Hz]
+		variable count_g_temp : integer;
 	begin
 		if (rising_edge(Clk)) then
-			count_g <= count_g + 1;
-			if (count_g >= 31565) then			--> 396Hz
+			count_g_temp 	:= count_g + 1;
+			count_g			<= count_g_temp;
+			if (count_g_temp >= 31565) then			--> 396Hz
 				if ( Clk_g = '0') then
 					Clk_g <= '1';
 				else
