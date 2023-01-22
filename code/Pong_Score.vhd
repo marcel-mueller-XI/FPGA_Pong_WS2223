@@ -7,14 +7,16 @@
 
 -- ToDo * * * * * * * * * * * * * * * * * * * * * * * *
 
--- Auf Monitor prüfen und wenn notwendig Array/Vectoren drehen
--- (Simulation i.O.)
+--
 
 -- ToDo * * * * * * * * * * * * * * * * * * * * * * * *
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.numeric_std.all;   -- unsigned / signed
+library work;
+use work.PongPack.all;  -- own project package
+
 --! @brief Pong_Score
 --! 
 --! Score-Module for the pong game. 
@@ -37,8 +39,8 @@ ENTITY Pong_Score IS
 		ball_outOfField	:	IN		std_logic; 								--! true if the ball hits the goal
 		out_left				:	IN		std_logic; 								--! true if the ball hits left goal
 		out_right			:	IN		std_logic; 								--! true if the ball hits right goal
-		x_in					:	IN		integer range 0 to 1023; 			--! x-coordinates of output [10bit]
-		y_in					:	IN		integer range 0 to 1023; 			--! y-coordinates of output [10bit]
+		x_in					:	IN		xType; 									--! x-coordinates of output [10bit]
+		y_in					:	IN		yType; 									--! y-coordinates of output [10bit]
 		
 		Score_max			:	OUT	std_logic;								--! output for the sound signal
 		color_field			:	OUT	std_logic;								--! output for VGA, '1' for white, '0' for black
@@ -99,7 +101,7 @@ BEGIN
 	y_row(2) 			<= y_in_vector(4);
 	
 	-- write output vor VGA interface * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	VGA_inPos   <= '1' WHEN ((x_gridposition = "00111" OR x_gridposition = "01101") AND y_gridposition = "00010")
+	VGA_inPos   <= '1' WHEN ((x_gridposition = "00110" OR x_gridposition = "01101") AND y_gridposition = "00010")
 						ELSE '0';
 	color_field <= bitmap_score(s1)(to_integer(unsigned(y_row)))(to_integer(unsigned(x_column))) OR 
 						bitmap_score(s2)(to_integer(unsigned(y_row)))(to_integer(unsigned(x_column))) WHEN  VGA_inPos = '1'
@@ -110,30 +112,40 @@ BEGIN
 	HEX_s2 <= std_logic_vector(to_unsigned(s2,4));
 	
 	-- process for counting the score * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	score_proc : PROCESS( ball_outOfField, Reset, reset_score)
+	score_proc : PROCESS( clk, Reset)
+		-- Variables for statements with changed values inside the process
+		VARIABLE s1_temp : integer range 0 to 15;			
+		VARIABLE s2_temp : integer range 0 to 15;
 	BEGIN
-		IF (Reset = '1') THEN										-- asynchronous reset
+		IF (Reset = '1') THEN										   -- asynchronous reset
 			Score_max <= '0';
 			s1 <= 0;
 			s2 <= 0;
-		ELSIF (reset_score = '1') THEN							-- reset from controler
-			Score_max <= '0';											-- separat von Reset um den Pfad clean zu halten
-			s1 <= 0;
-			s2 <= 0;
-		ELSIF rising_edge(ball_outOfField) THEN
-			IF ( out_left = '1' ) THEN								-- left side (1) " X_Pos_Ball = linke Seite "
-				s1 <= s1 + 1;
-				IF (s1 >= Max) THEN
-					Score_max <= '1';
-				END IF;
-			ELSE															-- right side (2)
-				s2 <= s2 + 1;
-				IF (s2 >= Max) THEN
-					Score_max <= '1';
-				END IF;
-			END IF;	
+			s1_temp := 0;
+			s2_temp := 0;
+		ELSIF rising_edge(clk) THEN
+			IF (reset_score = '1') THEN							   -- reset from controler
+				Score_max <= '0';											
+				s1 <= 0;
+				s2 <= 0;
+				s1_temp := 0;
+				s2_temp := 0;
+			ELSIF (ball_outOfField = '1') THEN
+				IF ( out_left = '1' ) THEN								-- left side out(1)
+					s1_temp := s1 + 1;
+					s1 <= s1_temp;
+					IF (s1_temp >= Max) THEN
+						Score_max <= '1';
+					END IF;
+				ELSIF	( out_right = '1' ) THEN						-- right side out(2)
+					s2_temp := s2 + 1;
+					s2 <= s2_temp;
+					IF (s2_temp >= Max) THEN
+						Score_max <= '1';
+					END IF;
+				END IF;	
+			END IF;
 		END IF;
 	END PROCESS score_proc;
 	
 END behave;
-
