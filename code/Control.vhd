@@ -43,7 +43,7 @@ begin
 		end if;
 	end process saveNextState;
 	-- #################################################################
-	nextState : process (current_state, button_start, button_resetMatch, ball_outOfField, score_max)
+	nextState : process (current_state, button_start, button_resetMatch, button_resetMatch_last, ball_outOfField, score_max)
 	begin
 		next_state <= current_state;
 		case( current_state ) is

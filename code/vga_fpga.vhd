@@ -76,9 +76,52 @@ architecture behave of vga_fpga is
 	-- score
 	signal score_max_int : std_logic;
 	signal reset_score_int : std_logic;
+	
+	-- button sync
+	signal button_start_ball_1 : std_logic;
+	signal button_start_ball_sync : std_logic;
+	
+	signal button_resetMatch_1 : std_logic;
+	signal button_resetMatch_sync : std_logic;
+	
+	-- reset sync
+	signal reset_1 : std_logic;
+	signal reset_2 : std_logic;
+	signal reset_sync : std_logic;
 begin
 --Debugg
     TestSignal <= start_ball_int & ball_outOfField_int & reset_score_int & '0' & '0' & A1_inc & '1' & '1' ;
+	 
+	 --inputsync
+	inputsync : process (reset_sync, Clk_vga_int)
+	begin
+		 if reset_sync = '1' then
+			  button_start_ball_1 <= '0';
+			  button_start_ball_sync <= '0';
+			  button_resetMatch_1 <= '0';
+			  button_resetMatch_sync <= '0';
+		 elsif rising_edge(Clk_vga_int) then
+			  button_start_ball_1 <= Button_start_out;
+			  button_start_ball_sync <= button_start_ball_1;
+			  button_resetMatch_1 <= Button_resetMatch_out;
+			  button_resetMatch_sync <= button_resetMatch_1;
+		 end if;
+	end process inputsync;
+	
+	-- Reset processing sync
+	resetsync : process (Reset, Clk_vga_int)
+	begin
+		 if Reset = '1' then
+			  reset_1 <= '0';
+			  reset_2 <= '0';
+		 elsif rising_edge(Clk_vga_int) then
+			  reset_1 <= '1';
+			  reset_2 <= reset_1;
+		 end if;
+	end process resetsync;
+
+	reset_sync <= not reset_2;
+	 
 	--! Instantiation of the VGA Signal Generator
 	sign_gen : entity work.vga_sign_gen(behave)
 		port map(
@@ -90,7 +133,7 @@ begin
 			VGA_HS		=> VGA_HS,
 			VGA_VS		=> VGA_VS,
 			Clk_vga		=> Clk_vga_int,
-			Reset			=> Reset,
+			Reset			=> reset_sync,
 			D_ball		=> D_ball_int,
 			D_paddle1	=> D_paddle1_int,
 			D_paddle2	=> D_paddle2_int,
@@ -116,7 +159,7 @@ begin
 		port map( 
 				--inputs
 			clk 	=> Clk_vga_int,
-			reset => Reset,
+			reset => reset_sync,
 			a	=> A1_inc,
 			b	=> B1_inc,
 
@@ -139,7 +182,7 @@ begin
 		port map( 
 				--inputs
 			clk 	=> Clk_vga_int,
-			reset => Reset,
+			reset => reset_sync,
 			a	=> A2_inc,
 			b	=> B2_inc,
 
@@ -202,7 +245,7 @@ begin
 	sound : entity work.Pong_Sound
 		port map(  
 			Clk					=> clk_vga_int,
-			Reset          	=> Reset,
+			Reset          	=> reset_sync,
 			Start					=> Start_ball_int,
 			paddle_bounce		=> paddle_bounce_int,
 			field_bounce		=> field_bounce_int,
@@ -215,7 +258,7 @@ begin
 	Score : entity work.Pong_Score
 		port map ( 
 			Clk					=> clk_vga_int,
-			Reset          	=> Reset,
+			Reset          	=> reset_sync,
 			reset_score      	=> reset_score_int,
 			ball_outOfField	=> ball_outOfField_int,
 			out_left				=> out_left_int,
@@ -232,11 +275,11 @@ begin
 	Control : entity work.Control
 		port map ( 
 			clk		=> clk_vga_int,
-			reset		=> reset,
+			reset		=> reset_sync,
 
 			-- INPUTS
-			button_start 		=> button_start_out,
-			button_resetMatch => button_resetMatch_out,
+			button_start 		=> button_start_ball_sync,
+			button_resetMatch => button_resetMatch_sync,
 			ball_outOfField 	=> ball_outOfField_int,
 			score_max			=> score_max_int,
 			-- OUTPUTS

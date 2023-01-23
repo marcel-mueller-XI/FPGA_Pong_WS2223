@@ -28,14 +28,14 @@ architecture behave of IncEncoder is
 	signal Up_nDown_int 		: std_logic;		--! internes Up_nDown-Signal
 	signal A1, A2				: std_logic;		--! interne Signale zur Synchronisation des asynchronen Eingangssignals A über zwei DFF
 	signal B1, B2				: std_logic;		--! interne Signale zur Synchronisation des asynchronen Eingangssignals B über zwei DFF
-	signal Reset1, Reset2	: std_logic;		--! interne Signale zur Synchronisation des asynchronen Resets
+	-- signal Reset1, Reset2	: std_logic;		--! interne Signale zur Synchronisation des asynchronen Resets
 	
 begin
 
 	--! Synchronisationsprozess für die asynchronen Eingangssignale -> siehe Jürgen Reichardt Digitaltechnik 15.3 S.321
-	sync_proc : process(Clk, Reset2)
+	sync_proc : process(Clk, Reset)
 	begin
-		if Reset2 = '1' then
+		if Reset = '1' then
 			A1 <= '0';
 			A2 <= '0';
 			B1 <= '0';
@@ -49,23 +49,23 @@ begin
 	end process sync_proc;
 	
 	--! Synchronisationsprozess für den asynchronen Reset
-	reset_sync_proc : process(Clk, Reset)
-	begin
-		if Reset = '1' then
-			Reset1 <= '0';
-			Reset2 <= '0';
-		elsif rising_edge(Clk) then
-			Reset1 <= '1';
-			Reset2 <= not Reset1;
-		end if;
-	end process reset_sync_proc;
+--	reset_sync_proc : process(Clk, Reset)
+--	begin
+--		if Reset = '1' then
+--			Reset1 <= '0';
+--			Reset2 <= '0';
+--		elsif rising_edge(Clk) then
+--			Reset1 <= '1';
+--			Reset2 <= not Reset1;
+--		end if;
+--	end process reset_sync_proc;
 	
 	--! Synchroner Prozess zur Speicherung des inneren Zustands und der Registered/Clocked Ausgangssignale
-	clocked_proc : process(Clk, Reset2)
+	clocked_proc : process(Clk, Reset)
 	begin
 	
 		--! Asynchroner Teil
-		if Reset2 = '1' then
+		if Reset = '1' then
 			current_state	<= s0;
 			En					<= '0';
 			Up_nDown			<= '0';
