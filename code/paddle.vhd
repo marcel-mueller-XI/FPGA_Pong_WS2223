@@ -54,9 +54,9 @@ begin
 	-- Paddle Movement Process
     paddle_movement : process(clk, reset)
     begin
-			if (reset='1') then
+		if (reset='1') then
 			pos_y <= DISPLAY_HEIGHT/2 - PADDLE_HEIGHT/2;
-         elsif rising_edge(clk) then
+        elsif rising_edge(clk) then
    -- Positioning of the paddle
             if Up_nDown = '1' and En = '1' then
                 pos_y <= pos_y - PADDLE_SPEED;
