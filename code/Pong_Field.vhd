@@ -18,7 +18,7 @@ use work.PongPack.all;  -- own project
 
 --! brief Pong_Field
 --!
---! Contains the field data
+--! The Field module serves as the game environment and background image, it is responsible for the display and organization of the game area.
 
 ENTITY Pong_Field IS
 	PORT(
@@ -38,9 +38,6 @@ ENTITY Pong_Field IS
 END Pong_Field;
 
 ARCHITECTURE behave OF Pong_Field IS
-
-	signal line_width	       :	INTEGER RANGE 0 TO 31;		--! linewidth for the centerline
-	signal distance          : INTEGER RANGE 0 TO 31;
 	
 	signal top_left_xi       :  xType;     --! Corner x-point top left
 	signal top_left_yi       :  yType;     --! Corner y-point top left
@@ -56,10 +53,10 @@ ARCHITECTURE behave OF Pong_Field IS
 	signal centerline_y      :  std_logic; --! Cornerline y flag
 	signal centerline_flag   :  std_logic; --! Cornerline flag 
 	
+	constant line_width	    :	INTEGER RANGE 0 TO 31 := 5;  --! linewidth for the centerline
+	constant distance        : INTEGER RANGE 0 TO 31 := 10; --! distance to the edge of the screen
+	
 BEGIN
-	-- margin and center line --> 10 pixel
-	line_width <= 5;
-	distance   <= 10;
 	
 	-- Coordinates of the corner points
 	top_left_xi      <= distance;
