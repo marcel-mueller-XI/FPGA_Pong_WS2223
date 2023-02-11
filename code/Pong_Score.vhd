@@ -7,7 +7,7 @@
 
 -- ToDo * * * * * * * * * * * * * * * * * * * * * * * *
 
---
+-- Alsias verwneden für gridpos usw.
 
 -- ToDo * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -57,7 +57,8 @@ ARCHITECTURE behave OF Pong_Score IS
 	signal 	x_column				:	std_logic_vector (2 DOWNTO 0);	--! Position of Input X in the column
 	signal 	y_gridposition		:	std_logic_vector (4 DOWNTO 0);	--! Position of Input Y in the grid
 	signal 	y_row					:	std_logic_vector (2 DOWNTO 0);	--! Position of Input Y in the column
-	signal 	VGA_inPos			:	std_logic;
+	signal 	VGA_inPos1			:	std_logic;								--! VGA-Cursor at player 1 position
+	signal 	VGA_inPos2			:	std_logic;								--! VGA-Cursor at player 2 position
 	signal 	x_in_vector			:	std_logic_vector (9 DOWNTO 0);
 	signal 	y_in_vector			:	std_logic_vector (9 DOWNTO 0);
 	
@@ -82,29 +83,19 @@ BEGIN
 	y_in_vector <= std_logic_vector(to_unsigned(y_in,10));
 	
 	-- Input-Vector to Gridposition and row/column * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	x_gridposition(0) <= x_in_vector(5);
-	x_gridposition(1) <= x_in_vector(6);
-	x_gridposition(2) <= x_in_vector(7);
-	x_gridposition(3) <= x_in_vector(8);
-	x_gridposition(4) <= x_in_vector(9);
-	y_gridposition(0) <= y_in_vector(5);
-	y_gridposition(1) <= y_in_vector(6);
-	y_gridposition(2) <= y_in_vector(7);
-	y_gridposition(3) <= y_in_vector(8);
-	y_gridposition(4) <= y_in_vector(9);
+	x_gridposition(4 DOWNTO 0) <= x_in_vector(9 DOWNTO 5);
+	y_gridposition(4 DOWNTO 0) <= y_in_vector(9 DOWNTO 5);
 
-	x_column(0) 		<= x_in_vector(2);
-	x_column(1) 		<= x_in_vector(3);
-	x_column(2) 		<= x_in_vector(4);
-	y_row(0) 			<= y_in_vector(2);
-	y_row(1) 			<= y_in_vector(3);
-	y_row(2) 			<= y_in_vector(4);
+	x_column(2 DOWNTO 0)			<= x_in_vector(4 DOWNTO 2);
+	y_row(2 DOWNTO 0)				<= y_in_vector(4 DOWNTO 2);
 	
 	-- write output vor VGA interface * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	VGA_inPos   <= '1' WHEN ((x_gridposition = "00110" OR x_gridposition = "01101") AND y_gridposition = "00010")
+	VGA_inPos1   <= '1' WHEN (x_gridposition = "00110" AND y_gridposition = "00010")
 						ELSE '0';
-	color_field <= bitmap_score(s1)(to_integer(unsigned(y_row)))(to_integer(unsigned(x_column))) OR 
-						bitmap_score(s2)(to_integer(unsigned(y_row)))(to_integer(unsigned(x_column))) WHEN  VGA_inPos = '1'
+	VGA_inPos2   <= '1' WHEN (x_gridposition = "01101" AND y_gridposition = "00010")
+						ELSE '0';
+	color_field <= bitmap_score(s2)(to_integer(unsigned(y_row)))(to_integer(unsigned(x_column))) WHEN  VGA_inPos1 = '1' ELSE
+						bitmap_score(s1)(to_integer(unsigned(y_row)))(to_integer(unsigned(x_column))) WHEN  VGA_inPos2 = '1'
 						ELSE '0';
 
 	-- write output for 7 segment display * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
