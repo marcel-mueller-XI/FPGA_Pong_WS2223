@@ -13,7 +13,7 @@
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-
+use work.PongPack.all;  -- own project package
 --! brief Pong_Sound
 --!
 --! Finite state machine (FSM) to output the sound for the pong game.
@@ -56,13 +56,12 @@ ARCHITECTURE behave OF Pong_Sound IS
 
    TYPE 		STATE_TYPE IS ( s0, s_playing, s_paddle_bounce, s_field_bounce, s_ball_outOfField, s_victory);
 	
-	SIGNAL 	current_state 	: 	STATE_TYPE;		--! register for internal state --> clocked_proc
-	
+	SIGNAL 	current_state 	: 	STATE_TYPE;		--! register for internal state --> clocked_proc	
 	SIGNAL 	next_state 		: 	STATE_TYPE;		--! register for logically built next interlan state --> nextstate_proc
 
 	signal	count_timing	:	integer := 0;	--! counter for timing between states [1 = 200 µs]
 	signal	count_melody	:	integer := 0;	--! counter for melody timing [1 = 200 µs]
-	signal	index_melody	:	integer := 0;	--! index for multiplexer
+	signal	index_melody	:	integer := 0;	--! index for multiplexer -> melody
 	signal	count_paddle	:	integer := 0;	--! counter for paddle sound [1 = 200 µs]
 	signal	count_edge		:	integer := 0;	--! counter for edge sound [1 = 200 µs]
 	signal	count_goal		:	integer := 0;	--! counter for goal sound [1 = 200 µs]
@@ -192,7 +191,7 @@ BEGIN
 				ELSE
 					count_melody <= count_melody + 1;
 				END IF;
-				ELSE -- für immer selben Start, sonst kann Zähler noch irgendwo stehen
+			ELSE -- für immer selben Start, sonst kann Zähler noch irgendwo stehen
 					index_melody <= 0;
 					count_melody <= 0;
 			END IF;
@@ -205,6 +204,8 @@ BEGIN
 		END IF;
 	END PROCESS timer_proc;
 	
+-- Ein Prozess pro Ton:  * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
 	proc_sound_paddle: process(Clk)			--! tone f' [352 Hz]
 		variable count_paddle_temp : integer;
 	begin
