@@ -2,7 +2,7 @@
 -- Aufgabe: 	Pong										 	 --
 -- Datei:	   Pong_Field.vhd					 			 --
 -- Autor:   	Jonas Sachwitz & Marco Stütz      	 --
--- Datum:   	18.01.2023                       	 --
+-- Datum:   	10.02.2023                       	 --
 ------------------------------------------------------
 
 -- ToDo * * * * * * * * * * * * * * * * * * * * * * * *
@@ -56,8 +56,7 @@ ARCHITECTURE behave OF Pong_Field IS
 	constant line_width	    :	INTEGER RANGE 0 TO 31 := 5;  --! linewidth for the centerline
 	constant distance        : INTEGER RANGE 0 TO 31 := 10; --! distance to the edge of the screen
 	
-BEGIN
-	
+BEGIN	
 	-- Coordinates of the corner points
 	top_left_xi      <= distance;
 	top_left_yi      <= distance;
@@ -73,16 +72,16 @@ BEGIN
 	centerline_max_x <= 320 + line_width;
 	 
 	-- dashed line
-	centerline_y <= '0' WHEN (y_value > 35  AND y_value <= 47)   OR 
-									 (y_value > 82  AND y_value <= 94)   OR
-									 (y_value > 129  AND y_value <= 141) OR
-									 (y_value > 176 AND y_value <= 188)  OR
-									 (y_value > 223 AND y_value <= 235)  OR
-									 (y_value > 270 AND y_value <= 282)  OR
-									 (y_value > 317 AND y_value <= 329)  OR
-									 (y_value > 364 AND y_value <= 376)  OR
-									 (y_value > 411 AND y_value <= 423)  OR
-									 (y_value > 458 AND y_value <= 470)  ELSE '1';		  
+     centerline_y <= '0' WHEN (y_value > 45  AND y_value <= 57)   OR 
+                                      (y_value > 92  AND y_value <= 104)  OR
+                                      (y_value > 139 AND y_value <= 151)  OR
+                                      (y_value > 186 AND y_value <= 198)  OR
+                                      (y_value > 233 AND y_value <= 245)  OR
+                                      (y_value > 280 AND y_value <= 292)  OR
+                                      (y_value > 327 AND y_value <= 339)  OR
+                                      (y_value > 374 AND y_value <= 386)  OR
+                                      (y_value > 421 AND y_value <= 433)  ELSE
+                            '1';		  
 	 
 	centerline_flag <= '1' WHEN x_value >= centerline_min_x AND x_value <= centerline_max_x AND centerline_y = '1' ELSE
 							 '0';
