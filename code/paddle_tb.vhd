@@ -1,3 +1,4 @@
+-- Marcel M & sSiyabend K.
 -- paddle_tb
 library ieee;
 use ieee.std_logic_1164.all;
@@ -38,7 +39,7 @@ begin
 DUT: entity work.paddle
 generic map(
 	xpos => 20,
-	PADDLE_SPEED => 1 
+	PADDLE_SPEED => 50
 	)
 port map(
 	clk => clk_tb,
@@ -66,7 +67,14 @@ port map(
 
 	clk_tb <= not(clk_tb) after PERIOD/2;
 	
-  	reset_tb <= '0', '1' after 10 ns, '0' after 30 ns;
+  	reset_tb <= '0', '1' after 3 ns, '0' after 5 ns;
+	
+	En_test <= '0', '1' after 15 ns; --'0' after 25 ns, '1' after 55 ns, '0' after 65 ns, '1' after 95 ns, '0' after 105 ns, '1' after 145 ns, '0' after 155 ns, '1' after 195 ns, '0' after 205 ns, '1' after 245 ns, '0' after 255 ns, '1' after 295 ns, '0' after 305 ns, '1' after 345 ns, '0' after 355 ns, '1' after 395 ns,'0' after 405 ns, '1' after 445 ns,'0' after 455 ns, '1' after 495 ns;
+	
+	Up_nDown_test <= '0', '1' after 240 ns;
+	
+	
+	
 	
 
 end architecture sim;
