@@ -95,26 +95,8 @@ set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -fall
 set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -rise
 set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -fall
 set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
-set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH vga_sign_gen_tb -section_id eda_simulation
+set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH Control_tb -section_id eda_simulation
 set_location_assignment PIN_B12 -to Clk_50
-set_global_assignment -name EDA_TEST_BENCH_NAME vga_controller_tb -section_id eda_simulation
-set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id vga_controller_tb
-set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "20 ms" -section_id vga_controller_tb
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME vga_controller_tb -section_id vga_controller_tb
-set_global_assignment -name EDA_TEST_BENCH_NAME vga_sign_gen_tb -section_id eda_simulation
-set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id vga_sign_gen_tb
-set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "100 ms" -section_id vga_sign_gen_tb
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME vga_sign_gen_tb -section_id vga_sign_gen_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE code/vga_controller_tester.vhd -section_id vga_controller_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE code/vga_controller_tb.vhd -section_id vga_controller_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE code/vga_sign_gen_tester.vhd -section_id vga_sign_gen_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE code/vga_sign_gen_tb.vhd -section_id vga_sign_gen_tb
-set_global_assignment -name EDA_TEST_BENCH_NAME vga_pll_tb -section_id eda_simulation
-set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id vga_pll_tb
-set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "1000 ns" -section_id vga_pll_tb
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME vga_pll_tb -section_id vga_pll_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE code/vga_pll_tester.vhd -section_id vga_pll_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE code/vga_pll_tb.vhd -section_id vga_pll_tb
 set_location_assignment PIN_K18 -to VGA_B[3]
 set_location_assignment PIN_J22 -to VGA_B[2]
 set_location_assignment PIN_K21 -to VGA_B[1]
@@ -183,4 +165,10 @@ set_instance_assignment -name FAST_INPUT_REGISTER ON -to Button_resetMatch_out
 set_instance_assignment -name FAST_INPUT_REGISTER ON -to Button_start_out
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to Button_resetMatch_out
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to Button_start_out
+set_global_assignment -name EDA_TEST_BENCH_NAME Control_tb -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id Control_tb
+set_global_assignment -name EDA_TEST_BENCH_RUN_SIM_FOR "1000 ns" -section_id Control_tb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME Control_tb -section_id Control_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE code/Control_tb.vhd -section_id Control_tb
+set_global_assignment -name EDA_NATIVELINK_SIMULATION_SETUP_SCRIPT code/sim.do -section_id eda_simulation
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
