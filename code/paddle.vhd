@@ -1,3 +1,4 @@
+--Siyabend K.
 library IEEE;  
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -6,8 +7,8 @@ use work.PongPack.all;
 
 entity paddle is 
 generic(
-	xpos : xType := 300; --position on x axis
-	PADDLE_SPEED : integer := 1 
+	xpos : xType := 0;--position on x axis
+	PADDLE_SPEED : integer := 1
 );
 
 port(
@@ -23,7 +24,10 @@ port(
 	--interface for VGA Display Driver
 	color_p : out std_logic; --outputs color on given cursor position (1 whend paddle position is on cursor position, 0 else)
 	x : in xType; --inputs current position of display cursor
-	y : in yType --inputs current position of display cursor
+	y : in yType; --inputs current position of display cursor
+	
+	En_test : in std_logic;
+	Up_nDown_test : in std_logic
 	);
 
 end entity paddle;
@@ -42,9 +46,12 @@ begin
 	x_display <= x;
 	y_display <= y;
 	pos_x <= xpos;
+	En <= En_test;
+	Up_nDown <= Up_nDown_test;
+
 
 	color_p <= '1' when pos_x <= x_display and x_display <= (pos_x + PADDLE_WIDTH) 
-					and pos_y <= y_display and y_display <= (pos_y + PADDLE_HEIGHT) else '0';
+					and pos_y <= y_display and y_display <= (pos_y + PADDLE_HEIGHT) else '0';				
 				
 	p_a_y <= pos_y;
 	p_a_x <= pos_x;                   
@@ -53,36 +60,38 @@ begin
 	
 	-- Paddle Movement Process
     paddle_movement : process(clk, reset)
+	 variable temp_pos_y : integer range -1024 to 1023;
     begin
 		if (reset='1') then
-			pos_y <= DISPLAY_HEIGHT/2 - PADDLE_HEIGHT/2;
+			pos_y <= (DISPLAY_HEIGHT/2 - PADDLE_HEIGHT/2);
         elsif rising_edge(clk) then
    -- Positioning of the paddle
             if Up_nDown = '1' and En = '1' then
-                pos_y <= pos_y - PADDLE_SPEED;
+                temp_pos_y := (pos_y - PADDLE_SPEED);
             elsif Up_nDown = '0' and En = '1' then
-                pos_y <= pos_y + PADDLE_SPEED;
+                temp_pos_y := (pos_y + PADDLE_SPEED);
             end if;
 
    -- Paddle shouldn't cross display area
-            if pos_y < 0 then
-                pos_y <= 0;
-            elsif pos_y > DISPLAY_HEIGHT - PADDLE_HEIGHT then
-                pos_y <= DISPLAY_HEIGHT - PADDLE_HEIGHT;
+            if temp_pos_y < 0 then
+                temp_pos_y := 0;
+            elsif temp_pos_y > (DISPLAY_HEIGHT - PADDLE_HEIGHT) then
+                temp_pos_y := (DISPLAY_HEIGHT - PADDLE_HEIGHT);
             end if;
+				pos_y <= temp_pos_y;
         end if;
     end process;
 	 
 
 	 
-inc_enc: entity work.IncEncoder(behave)
+inc_enc: entity work.IncrementalEncoder(behave)
 port Map (
 	Reset => reset,
 	A => a,
 	B => b,
 	Clk => clk,
-	En => En,
-	Up_nDown => Up_nDown
+	En => open,
+	Up_nDown => open
 );
 
 end architecture behave;
